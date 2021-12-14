@@ -1,0 +1,41 @@
+Timer unit: 1e-07 s
+
+Total time: 16.3204 s
+File: <ipython-input-3-bd47716803a4>
+Function: praw_reddit at line 1
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     1                                           def praw_reddit(nombre_subreddit="chile", n_hot=1000):
+     2         1         19.0     19.0      0.0      reddit = praw.Reddit(
+     3         1          8.0      8.0      0.0          client_id="-w2hyFINxZ8T3g",
+     4         1          6.0      6.0      0.0          client_secret="zGPCI4s3g6Ic6AsRi7vIpP0NoxbFdw",
+     5         1          6.0      6.0      0.0          password="ClasesMDS7202",
+     6         1          6.0      6.0      0.0          user_agent="Clases",
+     7         1          5.0      5.0      0.0          username="DocenciaDataScience",
+     8         1       3493.0   3493.0      0.0          check_for_async=False,
+     9                                               )
+    10         1        176.0    176.0      0.0      subreddit = reddit.subreddit(nombre_subreddit)
+    11                                           
+    12         1          8.0      8.0      0.0      votes, post, url = {}, {}, {}
+    13         1  162570962.0 162570962.0     99.6      top_submissions = list(subreddit.hot(limit=n_hot))
+    14        20        198.0      9.9      0.0      for it, top_n in enumerate(range(50, len(top_submissions), 50)):
+    15        19        794.0     41.8      0.0          top_n_submissions = top_submissions[:top_n]
+    16        19        671.0     35.3      0.0          upvotes, downvotes, url[it], post[it] = [], [], [], []
+    17                                           
+    18      9519      53331.0      5.6      0.0          for submission in top_n_submissions:
+    19      9500      51995.0      5.5      0.0              try:
+    20      9500      69158.0      7.3      0.0                  ratio = submission.upvote_ratio
+    21      9500      53818.0      5.7      0.0                  ups = int(
+    22                                                               round((ratio * submission.score) / (2 * ratio - 1))
+    23      9500     113087.0     11.9      0.1                      if ratio != 0.5
+    24       180       1725.0      9.6      0.0                      else round(submission.score / 2)
+    25                                                           )
+    26      9500      62561.0      6.6      0.0                  upvotes.append(ups)
+    27      9500      66385.0      7.0      0.0                  downvotes.append(ups - submission.score)
+    28      9500      73078.0      7.7      0.0                  post[it].append(submission.title)
+    29      9500      72805.0      7.7      0.0                  url[it].append(submission.url)
+    30                                                       except Exception as e:
+    31                                                           continue
+    32        19       9778.0    514.6      0.0          votes[it] = np.array([upvotes, downvotes]).T
+    33         1          8.0      8.0      0.0      return votes, post, url
